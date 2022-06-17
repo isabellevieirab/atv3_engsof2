@@ -2,7 +2,10 @@ name: Testes no Ubuntu, MacOS e Windows
 on: [push]
 jobs:
   Testes-Termo:
-    runs-on: [ubuntu-latest, macos-latest, windows-latest]
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v3
         with:
