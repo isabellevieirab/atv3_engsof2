@@ -1,7 +1,7 @@
 name: Testes no Ubuntu, MacOS e Windows
 on: [push]
 jobs:
-  Testes-Termo-MacOS:
+  Testes-Termo:
     runs-on: [windows-latest, ubuntu-latest, macos-latest]
     steps:
       - uses: actions/checkout@v3
