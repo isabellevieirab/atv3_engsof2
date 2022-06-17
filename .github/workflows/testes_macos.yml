@@ -9,7 +9,7 @@ jobs:
           python-version: '3.7'
           cache: 'pip'
       - name: Install dependencies
-        run: python -m pip install rich
+        run: python3 -m pip install rich
       - name: run testes mac
         run: |
           echo "Rodando testes no MacOS"
