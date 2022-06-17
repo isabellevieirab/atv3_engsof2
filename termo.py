@@ -29,17 +29,38 @@ def tamanho_incorreto(palpite):
     return len(palpite) != 5
 
 def palavra_invalida(palpite):
-    return palpite not in word_list
+    word_list_tratada = [trata_palavra(palavra) for palavra in word_list] #map(trata_palavra, word_list)
+    #print(word_list_tratada)
+    #print(palpite)
+    return trata_palavra(palpite) not in word_list_tratada
+
+def acertou_letra_errou_local(letra, resposta, arrayCountLetras):
+    indiceLetra = trata_palavra(resposta).find(trata_palavra(letra))
+    if (letra in resposta) or (letra in trata_palavra(resposta)):
+        arrayCountLetras[indiceLetra] = arrayCountLetras[indiceLetra] - 1
+        return (arrayCountLetras[indiceLetra]) >= 0
+    else:
+        return False
+
+def conta_letras(palavra):
+    palavra = trata_palavra(palavra)
+    array = []
+    for letra in palavra:
+        array.append(palavra.count(letra))
+    return array
 
 def checa_palpite(palpite, resposta):
-    respostaTratada = trata_palavra(resposta)
     resultado = []
     termoResultado = []
+    arrayCountLetras = conta_letras(resposta)
+
     for i, letra in enumerate(palpite):
-        if (resposta[i] == palpite[i]) or (respostaTratada[i] == palpite[i]):
+        if acertou(palpite[i],resposta[i]):#(resposta[i] == palpite[i]) or (respostaTratada[i] == palpite[i]):
+            aux = trata_palavra(resposta).find(trata_palavra(letra))
+            arrayCountLetras[aux] = arrayCountLetras[aux] - 1
             resultado += local_correto(resposta[i])
             termoResultado.append(QUADRADOS['local_correto'])
-        elif (letra in resposta) or (letra in respostaTratada):
+        elif acertou_letra_errou_local(letra, resposta, arrayCountLetras):#(letra in resposta) or (letra in respostaTratada):#arrayCountLetras
             resultado += letra_correta(letra)
             termoResultado.append(QUADRADOS['letra_correta'])
         else:
@@ -67,7 +88,11 @@ def palpite_invalido(palpite, tentativas):
         return False
 
 def acertou(palpite, palavraEscolhida):
-    return palpite == palavraEscolhida or palpite == trata_palavra(palavraEscolhida) or trata_palavra(palpite) == palavraEscolhida or trata_palavra(palpite) == trata_palavra(palavraEscolhida)
+    palpiteIgualPalavra = palpite == palavraEscolhida
+    palpiteIgualPalavraTratada = palpite == trata_palavra(palavraEscolhida) 
+    palpiteTratadoIgualPalavra = trata_palavra(palpite) == palavraEscolhida
+    palpiteTratadoIgualPalavraTratada = trata_palavra(palpite) == trata_palavra(palavraEscolhida)
+    return palpiteIgualPalavra or palpiteIgualPalavraTratada or palpiteTratadoIgualPalavra or palpiteTratadoIgualPalavraTratada
 
 def fim_do_jogo(palpite, palavraEscolhida, tentativas):
     if acertou(palpite, palavraEscolhida):
@@ -96,9 +121,10 @@ def jogo(console, palavraEscolhida):
         console.print(*palavrasAdivinhadas, sep="\n")
     console.print(*termoCompleto, sep="\n")
     
+console = Console()
 if __name__ == '__main__':
-    console = Console()
     palavraEscolhida = choice(word_list)
     console.print(MENSAGEM_INICIAL)
     console.print(INSTRUCOES)
+    #console.print(palavraEscolhida)
     jogo(console, palavraEscolhida)
